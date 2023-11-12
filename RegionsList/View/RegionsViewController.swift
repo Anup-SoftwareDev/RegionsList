@@ -60,7 +60,7 @@ class RegionsViewController: UIViewController, UITableViewDataSource, UITableVie
         viewModel.filteredAndSortedRegions = viewModel.regions
         selectedRowIndex = nil
         tableView.reloadData()
-        presentAlert(title: "Reset", message: "Regions List Reset ")
+        presentAlert(title: "Reset", message: "Regions List Reset")
     }
 
     // Function to display Dialog box indicating Region selected by user
