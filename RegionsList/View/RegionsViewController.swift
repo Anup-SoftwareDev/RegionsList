@@ -74,7 +74,7 @@ class RegionsViewController: UIViewController, UITableViewDataSource, UITableVie
             presentAlert(title: "No Selection", message: "Please select a region first.")
         }
     }
-    
+  
     // Function to add SearchBar into CustomNavigation Bar
     private func setUpSearchBarAndConstraints() {
         // Setup Search Bar UI

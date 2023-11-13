@@ -18,7 +18,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 let navigationController = UINavigationController(rootViewController: RegionsViewController())
                 window?.rootViewController = navigationController
                 window?.makeKeyAndVisible()
-        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
