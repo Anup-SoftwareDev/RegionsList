@@ -10,7 +10,8 @@ class RegionsViewController: UIViewController, UITableViewDataSource, UITableVie
     // View Model and Selected Row Index
     var viewModel = RegionsViewModel()
     var selectedRowIndex: IndexPath?
-
+    var selectedIndexRegion: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
@@ -138,12 +139,14 @@ class RegionsViewController: UIViewController, UITableViewDataSource, UITableVie
 // MARK: - SearchBar Delegate
 
 extension RegionsViewController {
+    
     // Handle search bar updates
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        selectedRowIndex = nil
-        viewModel.filterRegions(for: searchText)
-        tableView.reloadData()
-    }
+        func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+            selectedRowIndex = nil
+            viewModel.filterRegions(for: searchText)
+            tableView.reloadData()
+        }
+
 
     // Handle search bar cancel button click
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -152,6 +155,11 @@ extension RegionsViewController {
         viewModel.filteredAndSortedRegions = viewModel.regions
         tableView.reloadData()
     }
+    
+    func indexOfRegion(in filteredAndSortedRegions: [String], region: String) -> Int? {
+        return filteredAndSortedRegions.firstIndex(of: region)
+    }
+    
 }
 
 // MARK: - TableView DataSource & Delegate
