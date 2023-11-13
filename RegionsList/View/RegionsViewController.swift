@@ -22,7 +22,6 @@ class RegionsViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     // MARK: - Navigation Bar Setup
-
     func setupCustomNavigationBar() {
         setUpBarButtonsAndTitle()
         setUpSearchBarAndConstraints()
@@ -66,10 +65,11 @@ class RegionsViewController: UIViewController, UITableViewDataSource, UITableVie
 
     // Function to display Dialog box indicating Region selected by user
     @objc func doneBarButtonAction() {
-        
         if let selectedRowIndex = selectedRowIndex {
             let selectedRegion = viewModel.filteredAndSortedRegions[selectedRowIndex.row]
             presentAlert(title: "Selected Region", message: selectedRegion)
+        } else if selectedIndexRegion != nil {
+            presentAlert(title: "Selected Region", message: selectedIndexRegion!)
         } else {
             presentAlert(title: "No Selection", message: "Please select a region first.")
         }
@@ -106,7 +106,6 @@ class RegionsViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     // MARK: - TableView Setup
-    
     private func setUpTableViewAndConstraints() {
         // Setup TableView UI
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -115,7 +114,7 @@ class RegionsViewController: UIViewController, UITableViewDataSource, UITableVie
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         view.addSubview(tableView)
         
-        // Hide default cell separators to accomodate for custom one
+        // Hide default cell separators to accommodate for custom one
         tableView.separatorStyle = .none
         
         // Constraints for TableView
@@ -137,16 +136,31 @@ class RegionsViewController: UIViewController, UITableViewDataSource, UITableVie
 }
 
 // MARK: - SearchBar Delegate
-
 extension RegionsViewController {
     
-    // Handle search bar updates
-        func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-            selectedRowIndex = nil
-            viewModel.filterRegions(for: searchText)
-            tableView.reloadData()
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        // If selectedRowIndex is not nil, get the currently selected region
+        if let rowIndex = selectedRowIndex?.row {
+            selectedIndexRegion = viewModel.filteredAndSortedRegions[rowIndex]
         }
 
+        // Filter regions based on the search text
+        viewModel.filterRegions(for: searchText)
+
+        // Find the new index of the region after filtering
+        if let region = selectedIndexRegion,
+           let newIndex = indexOfRegion(in: viewModel.filteredAndSortedRegions, region: region) {
+            // Create a new IndexPath and assign it to selectedRowIndex
+            selectedRowIndex = IndexPath(row: newIndex, section: selectedRowIndex?.section ?? 0)
+            selectedIndexRegion = nil
+            
+        } else {
+            // If the region is not found after filtering, or if selectedRowIndex was initially nil
+            selectedRowIndex = nil
+        }
+        tableView.reloadData()
+    }
 
     // Handle search bar cancel button click
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -156,6 +170,7 @@ extension RegionsViewController {
         tableView.reloadData()
     }
     
+    // Function to return index value from filteredAndSortedRegions
     func indexOfRegion(in filteredAndSortedRegions: [String], region: String) -> Int? {
         return filteredAndSortedRegions.firstIndex(of: region)
     }
@@ -163,7 +178,6 @@ extension RegionsViewController {
 }
 
 // MARK: - TableView DataSource & Delegate
-
 extension RegionsViewController {
     // TableView DataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -212,3 +226,4 @@ extension RegionsViewController {
         }
     }
 }
+
